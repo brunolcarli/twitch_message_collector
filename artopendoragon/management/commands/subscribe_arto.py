@@ -47,7 +47,7 @@ class Command(BaseCommand):
             if not len(resp):
                 continue
 
-            data = resp.split()
+            data = resp.split(' :')
 
             try:
                 user = data[0].split('!')[0][1:]
@@ -58,11 +58,6 @@ class Command(BaseCommand):
             
             if 'tmi.twitch.tv' in user:
                 continue
-
-            if not msg.startswith(':'):
-                continue
-            
-            msg = msg[1:]
 
             try:
                 chat_message = ChatMessage.objects.create(
