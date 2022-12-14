@@ -57,11 +57,13 @@ class Command(BaseCommand):
             
             if 'tmi.twitch.tv' in user:
                 continue
+            if '/NAMES list' in msg:
+                continue
 
             try:
                 chat_message = ChatMessage.objects.create(
                     username=user,
-                    message=msg
+                    message=msg.strip()
                 )
                 chat_message.save()
                 print(f'Saved: {user}: {msg}')

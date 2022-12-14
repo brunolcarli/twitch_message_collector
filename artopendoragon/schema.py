@@ -13,12 +13,12 @@ class ChatMessageType(graphene.ObjectType):
     message_offense_level = graphene.Float()    
 
     def resolve_message_sentiment(self, info, **kwargs):
-        payload = f'query{{sentimentExtraction(text: "{self.message}")}}'
+        payload = f'query{{sentimentExtraction(text: "{self.message.strip()}")}}'
         response = requests.post(LISA, json={'query': payload}).json()
         return response['data']['sentimentExtraction']
 
     def resolve_message_offense_level(self, info, **kwargs):
-        payload = f'query{{textOffenseLevel(text: "{self.message}"){{average}}}}'
+        payload = f'query{{textOffenseLevel(text: "{self.message.strip()}"){{average}}}}'
         response = requests.post(LISA, json={'query': payload}).json()
         return response['data']['textOffenseLevel']['average']
 
