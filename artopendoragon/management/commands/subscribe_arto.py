@@ -38,7 +38,6 @@ class Command(BaseCommand):
                 sock.send(f"JOIN {self.channel}\n".encode('utf-8'))
                 continue
 
-            print(f'Received {resp}')
             if resp.startswith('PING'):
                 sock.send("PONG\n".encode('utf-8'))
                 print('Replying ping')
