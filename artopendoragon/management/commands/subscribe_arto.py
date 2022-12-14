@@ -1,3 +1,4 @@
+import requests
 import os
 import socket
 from time import sleep
@@ -11,6 +12,7 @@ class Command(BaseCommand):
     nickname = 'beelzebrunothewizard'
     token = 'oauth:dxc89qmhlk078xb1epczuo5nx1lksp'
     channel = '#artopendoragon'
+    lisa = 'http://104.237.1.145:2154/graphql/'
     
     def add_arguments(self, parser):
         # parser.add_argument('--name', type=int)
@@ -50,7 +52,7 @@ class Command(BaseCommand):
 
             try:
                 user = data[0].split('!')[0][1:]
-                msg = data[-1]
+                msg = data[-1].strip().replace('"', '')
             except Exception as err:
                 print(str(err))
                 continue
@@ -60,10 +62,25 @@ class Command(BaseCommand):
             if '/NAMES list' in msg:
                 continue
 
+            # get text polarity and offensivness from LISA
+            payload = f'''
+            query{{
+                sentimentExtraction(text: "{msg}")
+                textOffenseLevel(text: "{msg}"){{average}}
+            }}
+            '''
+
+            response = requests.post(self.lisa, json={'query': payload}).json()
+            sentiment = response['data'].get('sentimentExtraction', 0)
+            offense = response['data'].get('textOffenseLevel', {}).get('average', 0)
+
+
             try:
                 chat_message = ChatMessage.objects.create(
                     username=user,
-                    message=msg.strip()
+                    message=msg,
+                    message_sentiment=sentiment,
+                    message_offense_level=offense
                 )
                 chat_message.save()
                 print(f'Saved: {user}: {msg}')

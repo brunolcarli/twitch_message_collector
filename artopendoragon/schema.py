@@ -1,8 +1,5 @@
-import requests
 import graphene
 from artopendoragon.models import ChatMessage
-
-LISA = 'http://104.237.1.145:2154/graphql/'
 
 
 class ChatMessageType(graphene.ObjectType):
@@ -10,17 +7,7 @@ class ChatMessageType(graphene.ObjectType):
     username = graphene.String()
     message = graphene.String()
     message_sentiment = graphene.Float()
-    message_offense_level = graphene.Float()    
-
-    def resolve_message_sentiment(self, info, **kwargs):
-        payload = f'query{{sentimentExtraction(text: "{self.message.strip()}")}}'
-        response = requests.post(LISA, json={'query': payload}).json()
-        return response['data']['sentimentExtraction']
-
-    def resolve_message_offense_level(self, info, **kwargs):
-        payload = f'query{{textOffenseLevel(text: "{self.message.strip()}"){{average}}}}'
-        response = requests.post(LISA, json={'query': payload}).json()
-        return response['data']['textOffenseLevel']['average']
+    message_offense_level = graphene.Float()
 
 
 
