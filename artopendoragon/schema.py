@@ -20,7 +20,7 @@ class ChatMessageType(graphene.ObjectType):
     def resolve_message_offense_level(self, info, **kwargs):
         payload = f'query{{textOffenseLevel(text: "{self.message}"){{average}}}}'
         response = requests.post(LISA, json={'query': payload}).json()
-        return response['data']['textOffenseLevel']['averageß']
+        return response['data']['textOffenseLevel']['average']
 
 
 
