@@ -20,5 +20,6 @@ target: sub_arto run
 
 pipe:
 	make install
+	pip uninstall argparse -y
 	make migrate
 	make -j2 target
